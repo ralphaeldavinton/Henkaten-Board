@@ -1,0 +1,2684 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>HENKATEN BOARD</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- GOOGLE FONTS KOMBINASI -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800;900&family=Roboto+Condensed:wght@400;600;700&family=Roboto:wght@300;400;500;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/idb-keyval@6/dist/umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<style>
+/* ===== WARNA BARU ===== */
+:root {
+    --hijau-utama: #729E3F;
+    --hijau-sekunder: #2E7D32;
+    --orange-utama: #FF8F1F;
+    --orange-lembut: #FFBE7A;
+    --hijau-muda: #A4C814;
+    --putih: #FFFFFF;
+    --abu-teks: #2E2E2E;
+    --navy-aksen: #1F3C88;
+    --biru-muda: #4A90E2;
+}
+
+/* ===== KOMBINASI FONT ===== */
+body{
+    margin:0;
+    font-family: 'Roboto', Arial, Helvetica, sans-serif; /* Body text */
+    background:#f5f5f5;
+    height: 100vh;
+    overflow: hidden;
+    color: var(--abu-teks);
+}
+
+/* GLOBAL SCROLL CONTAINER */
+.global-scroll-container {
+    height: calc(100vh - 80px);
+    overflow-y: auto;
+    position: relative;
+}
+
+.global-scroll-container::-webkit-scrollbar {
+    width: 10px;
+}
+
+.global-scroll-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 5px;
+}
+
+.global-scroll-container::-webkit-scrollbar-thumb {
+    background: var(--hijau-utama);
+    border-radius: 5px;
+}
+
+.global-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: var(--hijau-sekunder);
+}
+
+/* ===== WATERMARK ===== */
+.watermark{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    opacity:0.12;
+    pointer-events:none;
+    z-index:0;
+}
+.watermark img{width:560px;}
+
+.content{position:relative;z-index:1;}
+
+/* ===== HEADER - DENGAN FITUR BARU ===== */
+.header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:var(--hijau-sekunder);
+    color:var(--orange-utama);
+    padding:15px 20px;
+    height: 110px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* HEADER SECTIONS */
+.header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 150px;
+}
+
+.header-left input{
+    padding:6px;
+    border-radius:5px;
+    border:none;
+    font-family: 'Roboto', sans-serif;
+    background: var(--putih);
+    color: var(--abu-teks);
+    border: 1px solid var(--hijau-muda);
+    width: 140px;
+}
+
+/* DATA EXPORT/IMPORT BUTTONS */
+.data-export-import {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.export-btn, .import-btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 2px solid var(--hijau-muda);
+    background: var(--putih);
+    color: var(--hijau-sekunder);
+    font-weight: bold;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    flex: 1;
+}
+
+.export-btn:hover {
+    background: var(--hijau-utama);
+    color: var(--putih);
+    transform: translateY(-2px);
+}
+
+.import-btn:hover {
+    background: var(--biru-muda);
+    color: var(--putih);
+    transform: translateY(-2px);
+}
+
+/* REAL-TIME CLOCK & SHIFT TIMER */
+.real-time-clock {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    z-index: 10;
+}
+
+.clock-time {
+    font-family: 'Orbitron', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--putih);
+    letter-spacing: 1px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-bottom: 3px;
+}
+
+.shift-timer {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--orange-lembut);
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.header-center{
+    font-size: 30px;
+    font-weight: 900;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 1.5px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    color: var(--orange-utama);
+    text-align: center;
+    flex: 1;
+}
+
+.header-right{
+    display:flex;
+    align-items:center;
+    justify-content: flex-end;
+    gap:15px;
+    min-width: 200px;
+}
+
+.factory-selector{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.factory-logo-wrapper{
+    position:relative;
+    width:80px;
+    height:70px;
+}
+
+.factory-logo{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    border-radius:6px;
+    cursor:pointer;
+    background:rgba(255, 255, 255, 0.1);
+    padding:5px;
+    transition:transform 0.2s;
+    /* Menghilangkan outline dan border */
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.factory-logo:hover{
+    transform:scale(1.05);
+}
+
+.upload-logo-btn{
+    position:absolute;
+    bottom:0;
+    right:0;
+    width:24px;
+    height:24px;
+    background:var(--orange-utama);
+    color:var(--putih);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    cursor:pointer;
+    border:2px solid var(--hijau-sekunder);
+    transform:translate(30%, 30%);
+    transition:all 0.2s;
+    font-family: 'Roboto', sans-serif;
+}
+
+.upload-logo-btn:hover{
+    background:var(--orange-lembut);
+    transform:translate(30%, 30%) scale(1.1);
+}
+
+.factory-upload-input{
+    display:none;
+}
+
+.header-right select{
+    padding:8px 12px;
+    border-radius:6px;
+    border:none;
+    min-width:140px;
+    font-size:14px;
+    background:var(--putih);
+    color:var(--hijau-sekunder);
+    font-weight:bold;
+    cursor:pointer;
+    font-family: 'Roboto', sans-serif;
+    border: 1px solid var(--hijau-muda);
+}
+
+/* ===== SHIFT SELECTOR ===== */
+.shift-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.shift-label {
+    color: var(--putih);
+    font-weight: bold;
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.shift-btn {
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 2px solid var(--orange-utama);
+    background: var(--hijau-sekunder);
+    color: var(--putih);
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 12px;
+    transition: all 0.2s;
+    min-width: 32px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.shift-btn:hover {
+    background: var(--hijau-utama);
+}
+
+.shift-btn.active {
+    background: var(--orange-utama);
+    color: var(--hijau-sekunder);
+    border-color: var(--putih);
+}
+
+/* ===== MAIN LAYOUT ===== */
+.main-layout{
+    display:grid;
+    grid-template-columns:380px 1fr;
+    gap:20px;
+    padding:20px;
+    min-height: calc(100vh - 120px);
+}
+
+.left-col,.right-col{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+.box{
+    background:var(--putih);
+    padding:18px;
+    border-radius:12px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.12);
+    border: 2px solid var(--hijau-muda);
+}
+
+/* ===== INPUT KEHADIRAN ===== */
+.input-kehadiran-box {
+    border: 2px solid var(--hijau-utama);
+}
+
+/* SUB-HEADER/BOX TITLES - Roboto Condensed */
+.input-kehadiran-box h3,
+.log-box h3,
+.box h3,
+.group-title {
+    color: var(--hijau-sekunder);
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--hijau-muda);
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: 0.5px;
+}
+
+.kehadiran-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.kehadiran-input-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.kehadiran-input-wrapper label {
+    font-size: 12px;
+    color: var(--abu-teks);
+    margin-bottom: 4px;
+    font-weight: bold;
+    font-family: 'Roboto', sans-serif;
+}
+
+.kehadiran-input {
+    width: 100%;
+    height: 36px;
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+    font-family: 'Roboto', sans-serif;
+    background: var(--putih);
+    color: var(--abu-teks);
+    border: 1px solid var(--hijau-muda);
+}
+
+.kehadiran-input:focus {
+    outline: none;
+    border-color: var(--hijau-utama);
+    box-shadow: 0 0 0 2px rgba(114, 158, 63, 0.1);
+}
+
+.refresh-btn {
+    width: 100%;
+    height: 40px;
+    background: var(--hijau-utama);
+    color: var(--putih);
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 5px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.refresh-btn:hover {
+    background: var(--hijau-sekunder);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* ===== LOG SECTION ===== */
+.log-box {
+    border: 2px solid var(--hijau-muda);
+}
+
+/* ===== TOMBOL TAMBAH LOG ===== */
+.tambah-log-btn {
+    width: 100%;
+    height: 42px;
+    background: var(--putih);
+    color: var(--hijau-sekunder);
+    border: 2px solid var(--hijau-sekunder);
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+    display: block;
+    text-align: center;
+    line-height: 38px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.tambah-log-btn:hover {
+    background: var(--hijau-sekunder);
+    color: var(--putih);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* ===== STRUKTUR ===== */
+.org-preview img{
+    width:100%;
+    max-height:240px;
+    object-fit:contain;
+    border-radius:8px;
+    border: 1px solid var(--hijau-muda);
+}
+
+/* ===== MACHINE GRID ===== */
+.machine-grid{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:10px;
+}
+
+.status-select{width:100%;padding:4px;margin-bottom:4px; font-family: 'Roboto', sans-serif;}
+
+/* WARNA STATUS BARU - DENGAN WARNA BARU */
+.status-normal{background:#f8f9fa !important; color:var(--abu-teks) !important; border: 1px solid #ddd !important;}
+.status-man{background:#e74c3c !important; color:var(--putih) !important; border: 1px solid #c0392b !important;}
+.status-material{background:var(--orange-utama) !important; color:var(--abu-teks) !important; border: 1px solid var(--orange-lembut) !important;}
+.status-machine{background:var(--navy-aksen) !important; color:var(--putih) !important; border: 1px solid #1F3C88 !important;}
+.status-method{background:var(--hijau-utama) !important; color:var(--putih) !important; border: 1px solid var(--hijau-sekunder) !important;}
+
+/* PREVIEW MACHINE */
+.machine-preview-container {
+    position: relative;
+    width: 100%;
+    height: 90px;
+    margin-top: 5px;
+}
+
+.machine-preview-frame {
+    width: 100%;
+    height: 100%;
+    border: 2px dashed #999;
+    border-radius: 6px;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+}
+
+.machine-preview-frame.empty::before {
+    content: "Upload Foto";
+    color: #666;
+    font-size: 11px;
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+}
+
+.machine-preview-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.machine-upload-input {
+    display: none;
+}
+
+/* ===== FILE INPUT CUSTOM ===== */
+.file-input-custom {
+    position: relative;
+    width: 100%;
+    margin-top: 5px;
+}
+
+.file-input-custom input[type="file"] {
+    width: 100%;
+    height: 30px;
+    opacity: 0;
+    position: absolute;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.file-input-custom .custom-file-button {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 30px;
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Roboto', sans-serif;
+}
+
+.file-input-custom .custom-file-button:hover {
+    background: #e9ecef;
+    border-color: #ccc;
+}
+
+/* ===== UPLOAD FOTO PERSEGI PANJANG ===== */
+.rectangle-upload {
+    width: 100%;
+    height: 90px;
+    border: 2px dashed #999;
+    border-radius: 6px;
+    background: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    margin-top: 8px;
+    transition: all 0.2s;
+}
+
+.rectangle-upload:hover {
+    background: #e9ecef;
+    border-color: #666;
+}
+
+.rectangle-upload.empty::before {
+    content: "Upload Foto";
+    color: #666;
+    font-size: 11px;
+    text-align: center;
+    font-weight: bold;
+    font-family: 'Roboto', sans-serif;
+}
+
+.rectangle-upload.empty::after {
+    content: "Klik untuk upload";
+    color: #888;
+    font-size: 9px;
+    text-align: center;
+    margin-top: 4px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.rectangle-upload img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+/* ===== FOTO LINGKARAN YANG DIPERBAIKI ===== */
+.circle-wrapper{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    margin-top:10px;
+    flex-wrap: wrap;
+}
+.circle{
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    background:#ddd;
+    border:2px dashed #999;
+    cursor:pointer;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:9px;
+    position: relative;
+    flex-shrink: 0;
+}
+.circle.empty::before {
+    content: "Foto";
+    color: #666;
+    font-family: 'Roboto', sans-serif;
+}
+.circle img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:50%;
+}
+
+/* ===== CIRCLE NAME STYLING ===== */
+.circle-name {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    text-align: center;
+    padding: 2px;
+    overflow: hidden;
+    word-break: break-word;
+    background: linear-gradient(135deg, var(--hijau-muda), var(--hijau-utama));
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+    color: var(--abu-teks);
+    line-height: 1.1;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 600;
+}
+
+.circle-name:hover {
+    background: linear-gradient(135deg, var(--hijau-utama), var(--hijau-sekunder));
+    transform: scale(1.05);
+}
+
+.circle.has-name {
+    border: 2px solid var(--hijau-utama);
+}
+
+/* WARNA BERDASARKAN SHIFT */
+.shift-a-name {
+    background: linear-gradient(135deg, var(--hijau-muda), var(--hijau-utama)) !important;
+    color: var(--abu-teks) !important;
+    border: 2px solid var(--hijau-utama) !important;
+}
+
+.shift-b-name {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb) !important;
+    color: var(--navy-aksen) !important;
+    border: 2px solid var(--navy-aksen) !important;
+}
+
+.circle-name.shift-a-name:hover {
+    background: linear-gradient(135deg, var(--hijau-utama), var(--hijau-sekunder)) !important;
+}
+
+.circle-name.shift-b-name:hover {
+    background: linear-gradient(135deg, #bbdefb, #90caf9) !important;
+}
+
+/* ===== ABSENSI ===== */
+.absensi-flex{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+    align-items:center;
+}
+.chart-wrapper{
+    position:relative;
+    width:200px;
+    height:200px;
+}
+.chart-center{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    text-align:center;
+}
+
+/* NUMBERS/STATS - Montserrat */
+#centerValue, .absen-fill, .chart-center {
+    font-family: 'Montserrat', sans-serif;
+}
+
+#centerValue{
+    font-size:24px;
+    font-weight:bold;
+    color: var(--hijau-sekunder);
+}
+
+.legend{
+    font-size:13px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+}
+.legend-item{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-family: 'Roboto', sans-serif;
+    color: var(--abu-teks);
+}
+.dot{width:10px;height:10px;border-radius:50%;}
+
+/* WARNA LEGENDA DENGAN PALET BARU */
+.green{background:var(--hijau-utama);}
+.red{background:#e74c3c;}
+.blue-dark{background:var(--navy-aksen);}
+.blue-light{background:#5dade2;}
+.orange{background:var(--orange-utama);}
+.pink{background:#ff69b4;}
+.purple{background:#8e44ad;}
+.yellow{background:#f1c40f;}
+
+.absen-bar{
+    margin-top:12px;
+    background:#ddd;
+    border-radius:12px;
+    overflow:hidden;
+}
+.absen-fill{
+    background:var(--hijau-utama);
+    color:var(--putih);
+    font-weight:bold;
+    padding:5px;
+    width:0%;
+}
+
+/* ===== GROUP CONTAINER STYLE ===== */
+.group-container {
+    background: linear-gradient(135deg, var(--orange-lembut), var(--putih));
+    border: 2px solid var(--orange-lembut);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    position: relative;
+    margin-top: 15px;
+}
+
+.group-title {
+    background: var(--hijau-sekunder);
+    color: var(--putih);
+    padding: 5px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 14px;
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    z-index: 2;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* MACHINE GRID DARI KODE KEDUA */
+.machine-grid-second{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+    gap:10px;
+    margin-top: 10px;
+}
+
+.box.machine-box {
+    padding: 10px;
+    font-size: 13px;
+    border: 1px solid var(--hijau-muda);
+    border-radius: 8px;
+    background: var(--putih);
+}
+
+.box.machine-box h4 {
+    font-size: 13px;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 600;
+    color: var(--abu-teks);
+}
+
+.status-select-second{
+    width:100%;
+    padding:4px;
+    margin-bottom:4px; 
+    font-size:11px; 
+    border: 1px solid var(--hijau-muda);
+    font-family: 'Roboto', sans-serif;
+    background: var(--putih);
+    color: var(--abu-teks);
+}
+
+/* WARNA STATUS DARI KODE KEDUA - DENGAN WARNA BARU */
+.status-normal-second{background:var(--putih) !important; color:var(--abu-teks) !important; border: 1px solid var(--hijau-muda) !important;} 
+.status-man-second{background:#e74c3c !important;color:var(--putih) !important; border: 1px solid #c0392b !important;}
+.status-material-second{background:var(--orange-utama) !important;color:var(--abu-teks) !important; border: 1px solid var(--orange-lembut) !important;}
+.status-machine-second{background:var(--navy-aksen) !important;color:var(--putih) !important; border: 1px solid var(--navy-aksen) !important;}
+.status-method-second{background:var(--hijau-utama) !important; color:var(--putih) !important; border: 1px solid var(--hijau-sekunder) !important;} 
+
+.preview-second img{width:100%;height:80px;object-fit:cover;border-radius:6px; border: 1px solid var(--hijau-muda);}
+
+/* INPUT FILE & LINGKARAN DARI KODE KEDUA */
+input[type="file"].second{
+    width:100%;
+    color:transparent;
+    display:flex;
+    justify-content:center;
+    margin:4px 0;
+    border: 1px solid var(--hijau-muda);
+    border-radius: 4px;
+    padding: 2px;
+}
+input[type="file"].second::-webkit-file-upload-button{visibility:hidden}
+input[type="file"].second::before{
+    content:"Pilih Foto";
+    background:var(--putih);
+    color:var(--abu-teks);
+    padding:2px 8px;
+    border-radius:5px;
+    cursor:pointer;
+    font-size:10px;
+    border: 1px solid var(--hijau-muda);
+    font-family: 'Roboto', sans-serif;
+}
+
+/* ===== LOG TABLE STYLE DARI KODE KEDUA ===== */
+.scrollBox-second {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid var(--hijau-muda);
+    border-radius: 6px;
+    margin-bottom: 15px;
+    background: var(--putih);
+}
+table.log-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    font-family: 'Roboto', sans-serif;
+}
+table.log-table th {
+    background: var(--hijau-sekunder);
+    color: var(--putih);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    padding: 8px;
+    text-align: left;
+    border-right: 1px solid var(--hijau-utama);
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 700;
+}
+table.log-table th:last-child {
+    border-right: none;
+}
+table.log-table td {
+    border-bottom: 1px solid var(--hijau-muda);
+    padding: 6px 8px;
+    vertical-align: top;
+    border-right: 1px solid var(--hijau-muda);
+    color: var(--abu-teks);
+}
+table.log-table td:last-child {
+    border-right: none;
+}
+table.log-table tr:nth-child(even) {background: rgba(114, 158, 63, 0.05);}
+
+/* ===== TOMBOL DELETE LOG ===== */
+.delete-log-btn {
+    width: 18px;
+    height: 18px;
+    background: #e74c3c;
+    color: var(--putih);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    cursor: pointer;
+    border: none;
+    opacity: 0;
+    transition: opacity 0.2s, background 0.2s;
+    margin-left: 5px;
+    float: right;
+    font-family: 'Roboto', sans-serif;
+}
+
+.delete-log-btn:hover {
+    background: #c0392b;
+}
+
+table.log-table tr:hover .delete-log-btn {
+    opacity: 1;
+}
+
+/* Untuk mobile, tombol selalu terlihat */
+@media (max-width: 768px) {
+    .delete-log-btn {
+        opacity: 1;
+    }
+}
+
+/* INPUT LOG GRID DARI KODE KEDUA */
+.log-input-area {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 10px;
+    align-items: end;
+}
+.span-2 { grid-column: span 2; }
+.span-4 { grid-column: span 4; }
+.log-input-area label {
+    font-size: 11px;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 4px;
+    color: var(--abu-teks);
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Input & select di dalam Log */
+#logSection input,
+#logSection select{
+    width: 100%;
+    height:36px;
+    font-size:13px;
+    border-radius:6px;
+    border:1px solid var(--hijau-muda);
+    padding:6px 10px;
+    margin-bottom:10px;
+    box-sizing:border-box;
+    background: var(--putih);
+    font-family: 'Roboto', sans-serif;
+    color: var(--abu-teks);
+}
+
+#logSection input:focus,
+#logSection select:focus {
+    outline: none;
+    border-color: var(--hijau-utama);
+    box-shadow: 0 0 0 2px rgba(114, 158, 63, 0.1);
+}
+
+#logSection input::placeholder{
+    color:#7a7a7a;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* ===== REPORT SUMMARY/ANALYTICS STYLING ===== */
+.report-summary-box {
+    border: 2px solid var(--navy-aksen);
+}
+
+.report-summary-box h3 {
+    color: var(--navy-aksen);
+    border-bottom: 2px solid var(--navy-aksen);
+}
+
+.report-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.report-stat-item {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    border: 1px solid var(--hijau-muda);
+}
+
+.report-stat-value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--navy-aksen);
+    margin-bottom: 5px;
+}
+
+.report-stat-label {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 11px;
+    color: var(--abu-teks);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.report-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.report-btn {
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.report-btn.primary {
+    background: var(--navy-aksen);
+    color: var(--putih);
+}
+
+.report-btn.primary:hover {
+    background: var(--biru-muda);
+    transform: translateY(-2px);
+}
+
+.report-btn.secondary {
+    background: var(--hijau-muda);
+    color: var(--abu-teks);
+}
+
+.report-btn.secondary:hover {
+    background: var(--hijau-utama);
+    color: var(--putih);
+    transform: translateY(-2px);
+}
+
+/* ===== MODAL STYLING ===== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: var(--putih);
+    border-radius: 12px;
+    padding: 25px;
+    max-width: 800px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--navy-aksen);
+}
+
+.modal-header h2 {
+    font-family: 'Orbitron', sans-serif;
+    color: var(--navy-aksen);
+    margin: 0;
+}
+
+.close-modal {
+    background: #e74c3c;
+    color: var(--putih);
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.close-modal:hover {
+    background: #c0392b;
+    transform: scale(1.1);
+}
+
+.modal-table-container {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.modal-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Roboto', sans-serif;
+}
+
+.modal-table th {
+    background: var(--navy-aksen);
+    color: var(--putih);
+    padding: 12px;
+    text-align: left;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 700;
+}
+
+.modal-table td {
+    padding: 10px;
+    border-bottom: 1px solid var(--hijau-muda);
+}
+
+.modal-table tr:nth-child(even) {
+    background: rgba(74, 144, 226, 0.05);
+}
+
+/* Responsive untuk layar kecil */
+@media (max-width: 768px) {
+    .factory-logo-wrapper{
+        width:70px;
+        height:60px;
+    }
+    
+    .factory-selector{
+        gap:8px;
+    }
+    
+    .header-right select{
+        min-width:120px;
+        font-size:13px;
+        padding:6px 10px;
+    }
+    
+    .shift-selector {
+        margin-right: 10px;
+    }
+    
+    .shift-btn {
+        padding: 4px 8px;
+        font-size: 11px;
+        min-width: 28px;
+    }
+    
+    .main-layout{
+        grid-template-columns:1fr;
+    }
+    
+    .machine-grid{
+        grid-template-columns:repeat(3,1fr);
+    }
+    
+    .log-input-area {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .span-2, .span-4 {
+        grid-column: span 2;
+    }
+    
+    .circle{
+        width:45px;
+        height:45px;
+    }
+    
+    /* Responsive untuk judul dengan Orbitron */
+    .header-center{
+        font-size: 24px;
+        letter-spacing: 1px;
+    }
+    
+    /* Responsive untuk sub-header */
+    .box h3, .log-box h3, .input-kehadiran-box h3 {
+        font-size: 16px;
+    }
+    
+    /* Responsive untuk real-time clock */
+    .real-time-clock {
+        position: relative;
+        top: 0;
+        right: 0;
+        align-items: center;
+        margin-bottom: 10px;
+        width: 100%;
+    }
+    
+    /* Responsive untuk header layout */
+    .header {
+        flex-direction: column;
+        height: auto;
+        padding: 10px;
+        gap: 10px;
+    }
+    
+    .header-left, .header-center, .header-right {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+    }
+    
+    .header-right {
+        flex-wrap: wrap;
+    }
+    
+    /* Responsive untuk data export/import buttons */
+    .data-export-import {
+        justify-content: center;
+    }
+    
+    /* Responsive untuk report stats grid */
+    .report-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Untuk layar yang sangat kecil */
+@media (max-width: 480px) {
+    .header {
+        padding: 8px;
+    }
+    
+    .header-center {
+        font-size: 20px;
+    }
+    
+    .factory-logo-wrapper {
+        width: 60px;
+        height: 50px;
+    }
+    
+    .header-right select {
+        min-width: 100px;
+        font-size: 12px;
+        padding: 5px 8px;
+    }
+    
+    .export-btn, .import-btn {
+        padding: 5px 8px;
+        font-size: 11px;
+    }
+    
+    .clock-time {
+        font-size: 16px;
+    }
+    
+    .shift-timer {
+        font-size: 12px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="watermark"><img src="sugity.png"></div>
+
+<div class="content">
+
+<div class="header">
+    <!-- HEADER LEFT: DATE & EXPORT/IMPORT -->
+    <div class="header-left">
+        <input type="date" id="tanggalHari" onchange="loadAllData()">
+        <div class="data-export-import">
+            <button class="export-btn" onclick="exportData()">📤 Export</button>
+            <button class="import-btn" onclick="importData()">📥 Import</button>
+        </div>
+    </div>
+    
+    <!-- HEADER CENTER: TITLE -->
+    <div class="header-center" id="displayTitle">HENKATEN BOARD</div>
+    
+    <!-- HEADER RIGHT: SHIFT & FACTORY -->
+    <div class="header-right">
+        <!-- Shift Selector -->
+        <div class="shift-selector">
+            <span class="shift-label">SHIFT:</span>
+            <button class="shift-btn active" id="shiftABtn" onclick="switchShift('A')">A</button>
+            <button class="shift-btn" id="shiftBBtn" onclick="switchShift('B')">B</button>
+        </div>
+        
+        <div class="factory-selector">
+            <div class="factory-logo-wrapper">
+                <img src="" id="factoryLogo" class="factory-logo" alt="Factory Logo">
+                <div class="upload-logo-btn" onclick="document.getElementById('factoryUpload').click()">+</div>
+                <input type="file" id="factoryUpload" class="factory-upload-input" accept="image/*" onchange="uploadFactoryLogo(event)">
+            </div>
+            <!-- DROPDOWN FACTORY -->
+            <select id="factorySelect" onchange="onFactoryChange()">
+                <option value="Factory 2">Factory 2</option>
+                <option value="Factory 3">Factory 3</option>
+                <option value="Factory 4">Factory 4</option>
+            </select>
+        </div>
+    </div>
+    
+    <!-- REAL-TIME CLOCK & SHIFT TIMER -->
+    <div class="real-time-clock">
+        <div class="clock-time" id="realTimeClock">00:00:00</div>
+        <div class="shift-timer" id="shiftTimer">Shift A: 00:00:00</div>
+    </div>
+</div>
+
+<!-- GLOBAL SCROLL CONTAINER UNTUK SELURUH SCREEN -->
+<div class="global-scroll-container" id="globalScroll">
+<div class="main-layout">
+
+<div class="left-col">
+
+<!-- REPORT SUMMARY/ANALYTICS BOX -->
+<div class="box report-summary-box">
+    <h3>Report Summary & Analytics</h3>
+    <div class="report-stats-grid" id="reportStats">
+        <div class="report-stat-item">
+            <div class="report-stat-value" id="totalMachines">0</div>
+            <div class="report-stat-label">Total Machines</div>
+        </div>
+        <div class="report-stat-item">
+            <div class="report-stat-value" id="normalMachines">0</div>
+            <div class="report-stat-label">Normal Status</div>
+        </div>
+        <div class="report-stat-item">
+            <div class="report-stat-value" id="problemMachines">0</div>
+            <div class="report-stat-label">Problem Status</div>
+        </div>
+        <div class="report-stat-item">
+            <div class="report-stat-value" id="totalLogs">0</div>
+            <div class="report-stat-label">Total Logs</div>
+        </div>
+        <div class="report-stat-item">
+            <div class="report-stat-value" id="manProblems">0</div>
+            <div class="report-stat-label">Man Problems</div>
+        </div>
+        <div class="report-stat-item">
+            <div class="report-stat-value" id="machineProblems">0</div>
+            <div class="report-stat-label">Machine Problems</div>
+        </div>
+    </div>
+    <div class="report-buttons">
+        <button class="report-btn primary" onclick="showDetailedReport()">📊 Detailed Report</button>
+        <button class="report-btn secondary" onclick="showProblemTrend()">📈 Problem Trend</button>
+    </div>
+</div>
+
+<div class="box">
+<h3>Struktur Organisasi</h3>
+<div class="file-input-custom">
+    <input type="file" accept="image/*" id="inputOrg" onchange="handleFile(this, 'orgPreview')">
+    <div class="custom-file-button">Pilih Foto Organisasi</div>
+</div>
+<div class="org-preview" id="orgPreview"></div>
+</div>
+
+<div class="box absensi-wrapper">
+<h3>Diagram Kehadiran</h3>
+<div class="absensi-flex">
+<div class="chart-wrapper">
+<canvas id="myChart"></canvas>
+<div class="chart-center">
+<div id="centerValue">0 / 0</div>
+<div style="font-size:12px">MP</div>
+</div>
+</div>
+<div class="legend">
+<div class="legend-item"><span class="dot green"></span>MP Hadir</div>
+<div class="legend-item"><span class="dot red"></span>MP Belum Absen</div>
+<div class="legend-item"><span class="dot blue-dark"></span>P. Cuti</div>
+<div class="legend-item"><span class="dot blue-light"></span>P. Sakit</div>
+<div class="legend-item"><span class="dot orange"></span>P. Ijin Lain</div>
+<div class="legend-item"><span class="dot pink"></span>O. Cuti</div>
+<div class="legend-item"><span class="dot purple"></span>O. Sakit</div>
+<div class="legend-item"><span class="dot yellow"></span>O. Ijin Lain</div>
+</div>
+</div>
+<div class="absen-bar">
+<div class="absen-fill" id="rasioText">Absensi: 0%</div>
+</div>
+</div>
+
+<!-- INPUT KEHADIRAN YANG RAPIH -->
+<div class="box input-kehadiran-box">
+    <h3>Input Kehadiran</h3>
+    <div class="kehadiran-grid">
+        <div class="kehadiran-input-wrapper">
+            <label>MP Hadir</label>
+            <input type="number" id="mpHadir" placeholder="MP Hadir" class="kehadiran-input" onchange="handleInput(this)">
+        </div>
+        <div class="kehadiran-input-wrapper">
+            <label>MP Belum Absen</label>
+            <input type="number" id="mpBelum" placeholder="MP Belum Absen" class="kehadiran-input" onchange="handleInput(this)">
+        </div>
+        <div class="kehadiran-input-wrapper">
+            <label>Pengawas Cuti</label>
+            <input type="number" id="pCuti" placeholder="Pengawas Cuti" class="kehadiran-input" onchange="handleInput(this)">
+        </div>
+        <div class="kehadiran-input-wrapper">
+            <label>Pengawas Sakit</label>
+            <input type="number" id="pSakit" placeholder="Pengawas Sakit" class="kehadiran-input" onchange="handleInput(this)">
+        </div>
+        <div class="kehadiran-input-wrapper">
+            <label>Pengawas Ijin Lain</label>
+            <input type="number" id="pIjin" placeholder="Pengawas Ijin Lain" class="kehadiran-input" onchange="handleInput(this)">
+        </div>
+        <div class="kehadiran-input-wrapper">
+            <label>Operator Cuti</label>
+            <input type="number" id="oCuti" placeholder="Operator Cuti" class="kehadiran-input" onchange="handleInput(this)">
+        </div>
+        <div class="kehadiran-input-wrapper">
+            <label>Operator Sakit</label>
+            <input type="number" id="oSakit" placeholder="Operator Sakit" class="kehadiran-input" onchange="handleInput(this)">
+        </div>
+        <div class="kehadiran-input-wrapper">
+            <label>Operator Ijin Lain</label>
+            <input type="number" id="oIjin" placeholder="Operator Ijin Lain" class="kehadiran-input" onchange="handleInput(this)">
+        </div>
+    </div>
+    <button class="refresh-btn" onclick="buatDiagram()">Refresh Diagram</button>
+</div>
+
+</div>
+
+<div class="right-col">
+
+<!-- MACHINE CONTAINER DARI KODE KEDUA -->
+<div id="machineContainer"></div>
+
+<!-- LOG SECTION YANG RAPIH -->
+<div class="box log-box" id="logSection">
+    <h3>Log Pergantian Pegawai</h3>
+    <div class="scrollBox-second" id="logScrollContainer">
+        <table class="log-table">
+            <thead>
+                <tr>
+                    <th>Tanggal</th>
+                    <th>Jenis Problem</th>
+                    <th>Lokasi</th>
+                    <th>Deskripsi Problem</th>
+                    <th>Cause</th>
+                    <th>Countermeasure</th>
+                    <th>PIC</th>
+                </tr>
+            </thead>
+            <tbody id="logTableBody"></tbody>
+        </table>
+    </div>
+
+    <div class="log-input-area">
+        <div>
+            <label>Jenis Problem</label>
+            <select id="logJenis">
+                <option value="">-- Pilih --</option>
+                <option value="Man">Man</option>
+                <option value="Material">Material</option>
+                <option value="Machine">Machine</option>
+                <option value="Method">Method</option>
+            </select>
+        </div>
+        <div>
+            <label>Lokasi</label>
+            <select id="logLokasi">
+                <option value="">-- Pilih Mesin --</option>
+            </select>
+        </div>
+        <div class="span-2">
+            <label>PIC</label>
+            <input type="text" id="logPIC" placeholder="Nama PIC">
+        </div>
+        <div class="span-2">
+            <label>Countermeasure</label>
+            <input type="text" id="logCounter" placeholder="Nama Countermeasure">
+        </div>
+        <div class="span-2">
+            <label>Cause</label>
+            <input type="text" id="logCause" placeholder="Penyebab">
+        </div>
+        <div class="span-4">
+            <label>Deskripsi Problem</label>
+            <input type="text" id="logDeskripsi" placeholder="Deskripsi">
+        </div>
+        <div class="span-4">
+            <button class="tambah-log-btn" onclick="tambahLog()">Tambah Log</button>
+        </div>
+    </div>
+</div>
+
+</div>
+
+</div>
+</div> <!-- END GLOBAL SCROLL CONTAINER -->
+
+<!-- MODAL FOR DETAILED REPORT -->
+<div class="modal-overlay" id="reportModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Detailed Report & Analytics</h2>
+            <button class="close-modal" onclick="closeModal()">×</button>
+        </div>
+        <div class="modal-table-container">
+            <table class="modal-table" id="detailedReportTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Shift</th>
+                        <th>Factory</th>
+                        <th>Machine</th>
+                        <th>Status</th>
+                        <th>Problem Type</th>
+                        <th>Description</th>
+                        <th>PIC</th>
+                    </tr>
+                </thead>
+                <tbody id="reportTableBody">
+                    <!-- Data akan diisi oleh JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<script>
+// ==================== KONFIGURASI GLOBAL ====================
+const factoryConfig = {
+    "Factory 2": [
+        { 
+            title: "Resin Injection", 
+            machines: ["#01-2500T", "#02-3500T", "#03-3500T", "#04-2500T", "#05-3500T", "#06-2500T", "#07-2500T", "#08-2500T", "Crane 30T", "Trans. Part", "Trans. Matl"] 
+        },
+        { 
+            title: "Robot Assembly", 
+            machines: ["Robot 1", "Robot 2", "Robot 3", "Robot 4", "Robot 5", "Quality"] 
+        },
+        { 
+            title: "SPS & Setting", 
+            machines: ["SPS", "Setting FG", "Repair Part"] 
+        },
+        { 
+            title: "Position & Final Check", 
+            machines: ["Pos 1", "Pos 2", "Pos 3", "Final Check", "Setting Fax", "Repair Part", "Trans. Child Part"] 
+        },
+        { 
+            title: "Key Persons", 
+            machines: ["KY Resin", "KY Assy", "KY Assy", "TL Resin", "TL Assy", "TL Assy", "GL"] 
+        }
+    ],
+    "Factory 3": [
+        { title: "Resin Injection", machines: ["#01-1300T", "#02-1300T", "#03-1300T", "#04-1050T", "#05-2500T", "#06-1600T", "#07-2500T", "#08-2500T", "#09-1600T", "#10-1600T", "#10a-650T", "#13-650T", "#14-650T", "MC Vibration", "Crane 18T", "Crane 7.5T", "Trans. Matl", "Trans. Part"] }
+    ],
+    "Factory 4": [
+        { title: "Resin Injection", machines: ["#01-350T", "#08-350T", "Crane 18T", "Assy 1", "Assy 2", "Assy 3", "Crushing"] }
+    ]
+};
+
+// ==================== VARIABLES FOR NEW FEATURES ====================
+let currentShift = 'A'; // 'A' atau 'B'
+let shiftStartTime = null;
+let shiftTimerInterval = null;
+
+// ==================== REAL-TIME CLOCK & SHIFT TIMER ====================
+function updateRealTimeClock() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('en-GB', { hour12: false });
+    document.getElementById('realTimeClock').textContent = timeString;
+    
+    // Update shift timer
+    updateShiftTimer();
+}
+
+function startShiftTimer() {
+    if (shiftTimerInterval) {
+        clearInterval(shiftTimerInterval);
+    }
+    
+    shiftStartTime = new Date();
+    shiftTimerInterval = setInterval(updateShiftTimer, 1000);
+}
+
+function updateShiftTimer() {
+    if (!shiftStartTime) return;
+    
+    const now = new Date();
+    const diff = now - shiftStartTime;
+    const hours = Math.floor(diff / 3600000);
+    const minutes = Math.floor((diff % 3600000) / 60000);
+    const seconds = Math.floor((diff % 60000) / 1000);
+    
+    const timerString = `Shift ${currentShift}: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    document.getElementById('shiftTimer').textContent = timerString;
+}
+
+// ==================== REPORT SUMMARY/ANALYTICS ====================
+async function updateReportSummary() {
+    const factory = document.getElementById("factorySelect").value;
+    const date = document.getElementById("tanggalHari").value;
+    
+    // Hitung total mesin
+    let totalMachines = 0;
+    (factoryConfig[factory] || []).forEach(g => totalMachines += g.machines.length);
+    document.getElementById('totalMachines').textContent = totalMachines;
+    
+    // Hitung status mesin
+    let normalMachines = 0;
+    let problemMachines = 0;
+    let manProblems = 0;
+    let machineProblems = 0;
+    
+    for(let i = 1; i <= totalMachines; i++) {
+        const status = await idbKeyval.get(getKey(`status-${i}`));
+        if (status) {
+            if (status === 'normal') {
+                normalMachines++;
+            } else {
+                problemMachines++;
+                if (status === 'man') manProblems++;
+                if (status === 'machine') machineProblems++;
+            }
+        } else {
+            normalMachines++;
+        }
+    }
+    
+    document.getElementById('normalMachines').textContent = normalMachines;
+    document.getElementById('problemMachines').textContent = problemMachines;
+    document.getElementById('manProblems').textContent = manProblems;
+    document.getElementById('machineProblems').textContent = machineProblems;
+    
+    // Hitung total logs
+    const logs = await idbKeyval.get(getKey("logData")) || [];
+    document.getElementById('totalLogs').textContent = logs.length;
+}
+
+function showDetailedReport() {
+    // Implementasi laporan detail
+    generateDetailedReport();
+    document.getElementById('reportModal').style.display = 'flex';
+}
+
+function closeModal() {
+    document.getElementById('reportModal').style.display = 'none';
+}
+
+async function generateDetailedReport() {
+    const factory = document.getElementById("factorySelect").value;
+    const date = document.getElementById("tanggalHari").value;
+    const tbody = document.getElementById('reportTableBody');
+    tbody.innerHTML = '';
+    
+    // Get machine statuses
+    let totalMachines = 0;
+    (factoryConfig[factory] || []).forEach(g => totalMachines += g.machines.length);
+    
+    for(let i = 1; i <= totalMachines; i++) {
+        const status = await idbKeyval.get(getKey(`status-${i}`)) || 'normal';
+        const machineName = getMachineNameById(i, factory);
+        
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${date}</td>
+            <td>${currentShift}</td>
+            <td>${factory}</td>
+            <td>${machineName}</td>
+            <td class="${status === 'normal' ? 'status-normal' : 'status-' + status}">${status.toUpperCase()}</td>
+            <td>${status !== 'normal' ? status : '-'}</td>
+            <td>${status !== 'normal' ? 'Machine in ' + status + ' status' : 'Operating normally'}</td>
+            <td>-</td>
+        `;
+    }
+    
+    // Add log entries
+    const logs = await idbKeyval.get(getKey("logData")) || [];
+    logs.forEach(log => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${log.tanggal}</td>
+            <td>${currentShift}</td>
+            <td>${factory}</td>
+            <td>${log.lokasi || '-'}</td>
+            <td class="status-${log.jenis.toLowerCase()}">PROBLEM</td>
+            <td>${log.jenis}</td>
+            <td>${log.deskripsi}</td>
+            <td>${log.pic}</td>
+        `;
+    });
+}
+
+function getMachineNameById(id, factory) {
+    let currentId = 1;
+    const groups = factoryConfig[factory] || [];
+    
+    for (const group of groups) {
+        for (const machine of group.machines) {
+            if (currentId === id) {
+                return machine;
+            }
+            currentId++;
+        }
+    }
+    return `Machine ${id}`;
+}
+
+function showProblemTrend() {
+    alert('Fitur Problem Trend akan menampilkan grafik trend masalah dari waktu ke waktu. Fitur ini memerlukan data historis yang lebih banyak.');
+    // Implementasi lebih lanjut bisa menggunakan Chart.js untuk menampilkan grafik trend
+}
+
+// ==================== DATA EXPORT/IMPORT ====================
+async function exportData() {
+    const factory = document.getElementById("factorySelect").value;
+    const date = document.getElementById("tanggalHari").value;
+    const shift = currentShift;
+    
+    // Collect all data
+    const exportData = {
+        metadata: {
+            factory: factory,
+            date: date,
+            shift: shift,
+            exportTime: new Date().toISOString(),
+            version: '1.0'
+        },
+        attendance: {
+            mpHadir: document.getElementById('mpHadir').value,
+            mpBelum: document.getElementById('mpBelum').value,
+            pCuti: document.getElementById('pCuti').value,
+            pSakit: document.getElementById('pSakit').value,
+            pIjin: document.getElementById('pIjin').value,
+            oCuti: document.getElementById('oCuti').value,
+            oSakit: document.getElementById('oSakit').value,
+            oIjin: document.getElementById('oIjin').value
+        },
+        machineStatuses: {},
+        logs: await idbKeyval.get(getKey("logData")) || []
+    };
+    
+    // Collect machine statuses
+    let totalMachines = 0;
+    (factoryConfig[factory] || []).forEach(g => totalMachines += g.machines.length);
+    
+    for(let i = 1; i <= totalMachines; i++) {
+        const status = await idbKeyval.get(getKey(`status-${i}`));
+        if (status) {
+            exportData.machineStatuses[`machine-${i}`] = status;
+        }
+    }
+    
+    // Convert to JSON
+    const jsonString = JSON.stringify(exportData, null, 2);
+    
+    // Create and download file
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `henkaten-board-${factory}-${date}-shift-${shift}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    alert(`Data berhasil diekspor!\n\nFile: ${a.download}`);
+}
+
+async function importData() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    
+    input.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+            try {
+                const importData = JSON.parse(event.target.result);
+                
+                // Validasi data
+                if (!importData.metadata || !importData.metadata.factory || !importData.metadata.date) {
+                    throw new Error('Format file tidak valid');
+                }
+                
+                // Konfirmasi import
+                const confirmImport = confirm(
+                    `Import data dari:\n` +
+                    `• Factory: ${importData.metadata.factory}\n` +
+                    `• Date: ${importData.metadata.date}\n` +
+                    `• Shift: ${importData.metadata.shift}\n\n` +
+                    `Data saat ini akan ditimpa. Lanjutkan?`
+                );
+                
+                if (!confirmImport) return;
+                
+                // Set factory jika berbeda
+                if (importData.metadata.factory !== document.getElementById('factorySelect').value) {
+                    document.getElementById('factorySelect').value = importData.metadata.factory;
+                    onFactoryChange();
+                }
+                
+                // Set date jika berbeda
+                if (importData.metadata.date !== document.getElementById('tanggalHari').value) {
+                    document.getElementById('tanggalHari').value = importData.metadata.date;
+                }
+                
+                // Set shift jika berbeda
+                if (importData.metadata.shift !== currentShift) {
+                    switchShift(importData.metadata.shift);
+                }
+                
+                // Import attendance data
+                if (importData.attendance) {
+                    document.getElementById('mpHadir').value = importData.attendance.mpHadir || '';
+                    document.getElementById('mpBelum').value = importData.attendance.mpBelum || '';
+                    document.getElementById('pCuti').value = importData.attendance.pCuti || '';
+                    document.getElementById('pSakit').value = importData.attendance.pSakit || '';
+                    document.getElementById('pIjin').value = importData.attendance.pIjin || '';
+                    document.getElementById('oCuti').value = importData.attendance.oCuti || '';
+                    document.getElementById('oSakit').value = importData.attendance.oSakit || '';
+                    document.getElementById('oIjin').value = importData.attendance.oIjin || '';
+                    
+                    // Save to IndexedDB
+                    const inputs = ["mpHadir","mpBelum","pCuti","pSakit","pIjin","oCuti","oSakit","oIjin"];
+                    for (const id of inputs) {
+                        if (importData.attendance[id]) {
+                            await idbKeyval.set(getKey(id), importData.attendance[id]);
+                        }
+                    }
+                    
+                    buatDiagram();
+                }
+                
+                // Import machine statuses
+                if (importData.machineStatuses) {
+                    for (const [machineId, status] of Object.entries(importData.machineStatuses)) {
+                        const id = machineId.replace('machine-', 'status-');
+                        await idbKeyval.set(getKey(id), status);
+                    }
+                }
+                
+                // Import logs
+                if (importData.logs && Array.isArray(importData.logs)) {
+                    await idbKeyval.set(getKey("logData"), importData.logs);
+                }
+                
+                // Reload all data
+                await loadAllData();
+                alert('Data berhasil diimport!');
+                
+            } catch (error) {
+                console.error('Import error:', error);
+                alert('Error mengimport data: ' + error.message);
+            }
+        };
+        
+        reader.readAsText(file);
+    };
+    
+    input.click();
+}
+
+// ==================== FUNGSI NAMA DARI FOTO ====================
+const memberData = {
+    "Factory 2": {
+        "shift_a": [
+            "Bagus T.", "Didin P.", "Wahyu U.", "Fariq N.", "Sulthan", "Nugroho", "M. Daffa", "M. Rizki", "M. Irsan", "Candra W.",
+            "Fahry A.", "Niko F.", "Ketut B.", "Rico J.", "Wahyu M.", "Ujang K.", "Saptadi", "Robby",
+            "Pilatus R.", "Ali N.", "Maisal N.", "Gunawan W.", "Warsito", "Saprigon", "Ego Wirya", "Yosep A.", "Ahmad Rifki", "Andjar T.",
+            "M. Wahyudin", "Herry S.", "Sukma W.", "Aman B.", "Dede J.",
+            "Fadil M.", "Dloan Munthu", "Tajul A.", "Siska S.", "Pandu P.", "Junedi S.", "Barhalen", "Eko R.",
+            "A. Latif", "Bambang B.", "M. Fadli", "Enu Y.", "Endang S.", "Jamson R.", "Heri Waluya",
+            "Gunawan", "Diwinanto", "Arif W.", "Suprayogi", "Heri Jumantq", "Dede Saleh", "Riki Suhendi"
+        ],
+        "shift_b": [
+            "Andri S.", "Zuliyatno", "Yaman", "Rhaka A.", "Alfan", "Avian A.", "Ricky Z.", "Sheva R.", "Raldyas", "Chardon S.",
+            "M. Shofwan", "Rahmat H.", "Sahrulloh", "Slamet R.", "Leonard", "Rahmat H.", "Untara I.", "Adit Tria",
+            "Irham M.", "Febriana", "M. Al Ghifari", "Chairil A.", "Wahyu P.", "Dedi S.", "Toto S.", "Doharles", "Chairul F.", "Akbar S.",
+            "Rizal A.", "Yulih", "Yugo K.", "Fakhih A.",
+            "Rafli N.", "Mardi", "Dzulfi R.", "Sindi N.", "Arya N.", "Adib A.", "Achmad F.", "Ardal F.",
+            "Gunawan", "Diwinanto", "Arif W.", "Suprayogi", "Heri Jumantq", "Dede Saleh", "Riki Suhendi",
+        ]
+    },
+    "Factory 3": {
+        "shift_a": ["F3-Operator-1", "F3-Operator-2", "F3-Operator-3", "F3-Operator-4", 
+                    "F3-Operator-5", "F3-Operator-6", "F3-Operator-7", "F3-Operator-8", 
+                    "F3-Operator-9", "F3-Operator-10", "F3-Operator-11", "F3-Operator-12"],
+        "shift_b": ["F3-Staff-1", "F3-Staff-2", "F3-Staff-3", "F3-Staff-4", 
+                    "F3-Staff-5", "F3-Staff-6", "F3-Staff-7", "F3-Staff-8", 
+                    "F3-Staff-9", "F3-Staff-10", "F3-Staff-11", "F3-Staff-12"]
+    },
+    "Factory 4": {
+        "shift_a": ["F4-Karyawan-1", "F4-Karyawan-2", "F4-Karyawan-3", "F4-Karyawan-4", 
+                    "F4-Karyawan-5", "F4-Karyawan-6", "F4-Karyawan-7", "F4-Karyawan-8", 
+                    "F4-Karyawan-9", "F4-Karyawan-10", "F4-Karyawan-11", "F4-Karyawan-12"],
+        "shift_b": ["F4-Pegawai-1", "F4-Pegawai-2", "F4-Pegawai-3", "F4-Pegawai-4", 
+                    "F4-Pegawai-5", "F4-Pegawai-6", "F4-Pegawai-7", "F4-Pegawai-8", 
+                    "F4-Pegawai-9", "F4-Pegawai-10", "F4-Pegawai-11", "F4-Pegawai-12"]
+    }
+};
+
+// ==================== KONFIGURASI LINGKARAN ====================
+const circleCountConfig = {
+    "Factory 2": {
+        "Resin Injection": {
+            "#01-2500T": 3,   // 3 lingkaran
+            "#02-3500T": 2,
+            "#03-3500T": 1,   // 1 lingkaran
+            "#04-2500T": 1,   // 1 lingkaran
+            "#05-3500T": 1,   // 1 lingkaran
+            "#06-2500T": 2,
+            "#07-2500T": 1,   // 1 lingkaran
+            "#08-2500T": 1,   // 1 lingkaran
+            "Crane 30T": 1,
+            "Trans. Part": 1,
+            "Trans. Matl": 1
+        },
+        "Robot Assembly": {
+            "Robot 1": 2,
+            "Robot 2": 2,
+            "Robot 3": 1,     // 1 lingkaran
+            "Robot 4": 2,
+            "Robot 5": 2,
+            "Quality": 1      // 1 lingkaran
+        },
+        "SPS & Setting": {
+            "SPS": 2,
+            "Setting FG": 2,
+            "Repair Part": 1  // 1 lingkaran
+        },
+        "Position & Final Check": {
+            "Pos 1": 1,       // 1 lingkaran
+            "Pos 2": 1,       // 1 lingkaran
+            "Pos 3": 1,       // 1 lingkaran
+            "Final Check": 2,
+            "Setting Fax": 1, // 1 lingkaran
+            "Repair Part": 1, // 1 lingkaran
+            "Trans. Child Part": 1 // 1 lingkaran
+        },
+        "Key Persons": {
+            "KY Resin": 1,    // 1 lingkaran
+            "KY Assy": 1,     // 1 lingkaran
+            "KY Assy": 1,     // 1 lingkaran (untuk KY Assy kedua)
+            "TL Resin": 1,    // 1 lingkaran
+            "TL Assy": 1,     // 1 lingkaran
+            "TL Assy": 1,     // 1 lingkaran (untuk TL Assy kedua)
+            "GL": 1           // 1 lingkaran
+        }
+    }
+};
+
+// Path ke file PNG default
+const factoryPNGs = {
+    "Factory 2": 'factory.png',    
+    "Factory 3": 'factory.png',    
+    "Factory 4": 'factory.png'     
+};
+
+// ==================== FUNGSI UTILITAS ====================
+function getKey(elementId) {
+    const date = document.getElementById("tanggalHari").value;
+    const factory = document.getElementById("factorySelect").value;
+    return `${date}_${factory}_${currentShift}_${elementId}`;
+}
+
+function getPhotoKey(elementId, useGlobal = false) {
+    const date = useGlobal ? 'GLOBAL' : document.getElementById("tanggalHari").value;
+    const factory = document.getElementById("factorySelect").value;
+    return `photo_${date}_${factory}_${currentShift}_${elementId}`;
+}
+
+async function savePhoto(elementId, photoData, isGlobal = false) {
+    const key = getPhotoKey(elementId, isGlobal);
+    
+    // Simpan ke localStorage untuk performa cepat
+    localStorage.setItem(key, photoData);
+    
+    // Simpan juga ke IndexedDB untuk backup
+    await idbKeyval.set(key, photoData);
+    
+    console.log(`📸 Saved photo: ${elementId} (${isGlobal ? 'Global' : 'Date-specific'})`);
+}
+
+async function loadPhoto(elementId, targetElementId = null) {
+    const currentDate = document.getElementById("tanggalHari").value;
+    const factory = document.getElementById("factorySelect").value;
+    const element = targetElementId ? 
+        document.getElementById(targetElementId) : 
+        document.getElementById(elementId);
+    
+    if (!element) return null;
+    
+    // Cari urutan: tanggal → global → tidak ada
+    let photoData = null;
+    
+    // 1. Coba foto untuk tanggal spesifik
+    const dateKey = getPhotoKey(elementId, false);
+    photoData = localStorage.getItem(dateKey);
+    
+    if (!photoData) {
+        // 2. Coba foto global
+        const globalKey = getPhotoKey(elementId, true);
+        photoData = localStorage.getItem(globalKey);
+        
+        if (!photoData) {
+            // 3. Coba dari IndexedDB sebagai fallback
+            photoData = await idbKeyval.get(dateKey) || await idbKeyval.get(globalKey);
+        }
+    }
+    
+    if (photoData) {
+        if (element.tagName === 'IMG') {
+            element.src = photoData;
+        } else if (element.classList.contains('rectangle-upload') || 
+                   element.classList.contains('circle') ||
+                   element.id === 'orgPreview') {
+            element.innerHTML = `<img src="${photoData}">`;
+            element.classList.remove('empty');
+        }
+        
+        const source = photoData.includes('GLOBAL') ? 'global' : 'date-specific';
+        console.log(`📸 Loaded ${elementId} from ${source} (${currentDate})`);
+        return photoData;
+    }
+    
+    return null;
+}
+
+async function uploadPhotoWithOptions(inputElement, targetElementId) {
+    const file = inputElement.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        const photoData = e.target.result;
+        const element = document.getElementById(targetElementId);
+        const currentDate = document.getElementById("tanggalHari").value;
+        
+        // Tampilkan preview
+        if (element.classList.contains('rectangle-upload') || 
+            element.classList.contains('circle') ||
+            element.id === 'orgPreview') {
+            element.innerHTML = `<img src="${photoData}">`;
+            element.classList.remove('empty');
+        }
+        
+        // Tampilkan dialog pilihan
+        const choice = confirm(`Simpan foto untuk:\n\n• "OK" = Tanggal ${currentDate} saja\n• "Cancel" = SEMUA tanggal (global)`);
+        
+        if (choice) {
+            // Simpan hanya untuk tanggal ini
+            await savePhoto(inputElement.id, photoData, false);
+            alert(`✅ Foto disimpan hanya untuk tanggal ${currentDate}`);
+        } else {
+            // Simpan untuk semua tanggal (global)
+            await savePhoto(inputElement.id, photoData, true);
+            alert('✅ Foto disimpan untuk SEMUA tanggal');
+        }
+        
+        // Reset input file
+        inputElement.value = '';
+    };
+    
+    reader.readAsDataURL(file);
+}
+
+// ==================== FUNGSI NAMA DARI FOTO ====================
+function assignNamesToCircles() {
+    console.log('🔄 Assigning names to circles for Shift', currentShift);
+    
+    const factorySelect = document.getElementById('factorySelect');
+    const factoryId = factorySelect.value;
+    
+    const shiftKey = currentShift === 'A' ? 'shift_a' : 'shift_b';
+    const shiftData = memberData[factoryId]?.[shiftKey] || [];
+    
+    console.log(`📊 Factory: ${factoryId}, Shift: ${currentShift}, Available names: ${shiftData.length}`);
+    
+    let nameIndex = 0;
+    const allCircles = document.querySelectorAll('.circle:not(.circle-name)');
+    
+    allCircles.forEach((circle, circleIndex) => {
+        circle.innerHTML = '';
+        circle.classList.remove('empty', 'has-name');
+        
+        if (nameIndex < shiftData.length) {
+            const name = shiftData[nameIndex];
+            const nameDiv = document.createElement('div');
+            nameDiv.className = `circle-name ${shiftKey === 'shift_a' ? 'shift-a-name' : 'shift-b-name'}`;
+            nameDiv.textContent = name;
+            nameDiv.title = `${name} (Shift ${currentShift})`;
+            
+            nameDiv.onclick = function(e) {
+                e.stopPropagation();
+                uploadPhotoToCircle(circle, name);
+            };
+            
+            circle.appendChild(nameDiv);
+            circle.classList.add('has-name');
+            nameIndex++;
+            
+            // Log untuk debugging
+            if (circleIndex < 10) {
+                console.log(`  ○ Circle ${circleIndex+1}: ${name}`);
+            }
+        } else {
+            circle.classList.add('empty');
+            circle.textContent = 'Foto';
+            circle.onclick = function() {
+                uploadPhotoToCircle(circle);
+            };
+        }
+    });
+    
+    console.log(`✅ Total circles assigned: ${nameIndex} of ${allCircles.length}`);
+}
+
+function uploadPhotoToCircle(circle, currentName = '') {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.style.display = 'none';
+    
+    // Buat ID unik untuk circle jika belum ada
+    if (!circle.id) {
+        circle.id = `circle-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    }
+    const circleId = circle.id;
+    
+    input.onchange = async function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = async function(event) {
+            const img = document.createElement('img');
+            img.src = event.target.result;
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.objectFit = 'cover';
+            
+            circle.innerHTML = '';
+            circle.appendChild(img);
+            circle.classList.remove('empty', 'has-name');
+            
+            if (currentName) {
+                img.title = `${currentName} (Shift ${currentShift})`;
+            }
+            
+            // Tampilkan dialog pilihan
+            const currentDate = document.getElementById("tanggalHari").value;
+            const choice = confirm(`Simpan foto untuk:\n\n• "OK" = Tanggal ${currentDate} saja\n• "Cancel" = SEMUA tanggal (global)`);
+            
+            if (choice) {
+                // Simpan hanya untuk tanggal ini
+                await savePhoto(circleId, event.target.result, false);
+                alert(`✅ Foto disimpan hanya untuk tanggal ${currentDate}`);
+            } else {
+                // Simpan untuk semua tanggal (global)
+                await savePhoto(circleId, event.target.result, true);
+                alert('✅ Foto disimpan untuk SEMUA tanggal');
+            }
+        };
+        reader.readAsDataURL(file);
+    };
+    
+    document.body.appendChild(input);
+    input.click();
+    setTimeout(() => {
+        if (document.body.contains(input)) {
+            document.body.removeChild(input);
+        }
+    }, 100);
+}
+
+function switchShift(shift) {
+    if (currentShift === shift) return;
+    
+    currentShift = shift;
+    console.log(`🔄 Switching to Shift ${shift}`);
+    
+    const shiftABtn = document.getElementById('shiftABtn');
+    const shiftBBtn = document.getElementById('shiftBBtn');
+    
+    if (shiftABtn && shiftBBtn) {
+        shiftABtn.classList.toggle('active', shift === 'A');
+        shiftBBtn.classList.toggle('active', shift === 'B');
+    }
+    
+    // Restart shift timer
+    startShiftTimer();
+    
+    assignNamesToCircles();
+    loadAllData();
+    updateReportSummary();
+}
+
+// ==================== FUNGSI FACTORY LOGO ====================
+function setFactoryLogo(factoryName) {
+    const logoFile = factoryPNGs[factoryName];
+    const factoryLogo = document.getElementById('factoryLogo');
+    
+    const savedLogo = localStorage.getItem(`factory-logo-${factoryName}`);
+    if (savedLogo) {
+        factoryLogo.src = savedLogo;
+        return;
+    }
+    
+    const img = new Image();
+    img.onload = function() {
+        factoryLogo.src = logoFile;
+    };
+    img.onerror = function() {
+        factoryLogo.src = 'data:image/svg+xml;base64,' + btoa(`
+            <svg width="80" height="70" viewBox="0 0 80 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="80" height="70" rx="6" fill="#2E7D32"/>
+                <text x="40" y="35" font-family="Roboto" font-size="14" fill="#FF8F1F" text-anchor="middle" dy="0.3em">${factoryName.slice(-1)}</text>
+            </svg>
+        `);
+    };
+    img.src = logoFile;
+}
+
+function uploadFactoryLogo(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const factoryLogo = document.getElementById('factoryLogo');
+        factoryLogo.src = e.target.result;
+        
+        const factoryId = document.getElementById('factorySelect').value;
+        localStorage.setItem(`factory-logo-${factoryId}`, e.target.result);
+    };
+    reader.readAsDataURL(file);
+    
+    event.target.value = '';
+}
+
+// ==================== FUNGSI UTAMA ====================
+function onFactoryChange() {
+    const factory = document.getElementById("factorySelect").value;
+    
+    document.getElementById("displayTitle").innerText = "HENKATEN BOARD - " + factory.toUpperCase();
+    
+    setFactoryLogo(factory);
+    loadAllData();
+}
+
+function handleInput(el) {
+    const key = getKey(el.id);
+    const value = el.value;
+    
+    if (el.type === 'file' && el.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // Simpan ke IndexedDB
+            idbKeyval.set(key, e.target.result).then(() => {
+                console.log(`Saved ${key}`);
+                updateReportSummary();
+            });
+        };
+        reader.readAsDataURL(el.files[0]);
+    } else {
+        idbKeyval.set(key, value).then(() => {
+            console.log(`Saved ${key} = ${value}`);
+            updateReportSummary();
+        });
+    }
+    
+    if(el.classList.contains("status-select") || el.classList.contains("status-select-second")){
+        const num = el.id.split("-")[1];
+        const box = document.getElementById("machine-"+num);
+        if(box) {
+            box.className = "box machine-box status-"+el.value+"-second";
+        }
+    }
+    
+    if(["mpHadir","mpBelum","pCuti","pSakit","pIjin","oCuti","oSakit","oIjin"].includes(el.id)) {
+        buatDiagram();
+    }
+    
+    // Update report summary when data changes
+    setTimeout(updateReportSummary, 100);
+}
+
+function handleFile(input, previewId) {
+    uploadPhotoWithOptions(input, previewId);
+}
+
+function handleRectangleUpload(input, rectangleId) {
+    uploadPhotoWithOptions(input, rectangleId);
+}
+
+function renderMachines() {
+    const factory = document.getElementById("factorySelect").value;
+    const groups = factoryConfig[factory] || [];
+    const container = document.getElementById("machineContainer");
+    container.innerHTML = "";
+    let globalMachineIndex = 1;
+
+    groups.forEach(group => {
+        const groupDiv = document.createElement("div");
+        groupDiv.className = "group-container";
+        groupDiv.innerHTML = `<div class="group-title">${group.title}</div>`;
+        const gridDiv = document.createElement("div");
+        gridDiv.className = "machine-grid-second";
+
+        group.machines.forEach(machineName => {
+            const idx = globalMachineIndex++;
+            
+            let circleCount = 2;
+            if (circleCountConfig[factory] && 
+                circleCountConfig[factory][group.title] && 
+                circleCountConfig[factory][group.title][machineName]) {
+                circleCount = circleCountConfig[factory][group.title][machineName];
+            }
+            
+            let circlesHTML = '';
+            for (let i = 1; i <= circleCount; i++) {
+                circlesHTML += `<div class="circle" id="circlePreview-${idx}-${i}"></div>`;
+            }
+            
+            gridDiv.innerHTML += `
+            <div class="box machine-box status-normal-second" id="machine-${idx}">
+                <h4 title="${machineName}">${machineName}</h4>
+                <select class="status-select-second" id="status-${idx}" onchange="handleInput(this)">
+                    <option value="normal">Normal</option>
+                    <option value="man">Man</option>
+                    <option value="material">Material</option>
+                    <option value="machine">Machine</option>
+                    <option value="method">Method</option>
+                </select>
+                
+                <div class="rectangle-upload empty" id="rectangle-${idx}" onclick="document.getElementById('fileRectangle-${idx}').click()">
+                </div>
+                <input type="file" accept="image/*" id="fileRectangle-${idx}" class="second" style="display: none;" onchange="handleRectangleUpload(this, 'rectangle-${idx}')">
+                
+                <div class="circle-wrapper">
+                    ${circlesHTML}
+                </div>
+            </div>`;
+        });
+        groupDiv.appendChild(gridDiv);
+        container.appendChild(groupDiv);
+    });
+    
+    setTimeout(() => {
+        assignNamesToCircles();
+        updateReportSummary();
+    }, 100);
+}
+
+function populateLogLocations() {
+    const select = document.getElementById("logLokasi");
+    select.innerHTML = '<option value="">-- Pilih Mesin --</option>';
+    const currentFactory = document.getElementById("factorySelect").value;
+    (factoryConfig[currentFactory] || []).forEach(group => {
+        group.machines.forEach(machine => {
+            const opt = document.createElement("option");
+            opt.value = machine; opt.innerText = machine; select.appendChild(opt);
+        });
+    });
+}
+
+async function loadAllData() {
+    const factory = document.getElementById("factorySelect").value;
+    const currentDate = document.getElementById("tanggalHari").value;
+    
+    document.getElementById("displayTitle").innerText = "HENKATEN BOARD - " + factory.toUpperCase();
+
+    renderMachines();
+    populateLogLocations();
+
+    document.querySelectorAll(".kehadiran-input, .log-input-area input, .log-input-area select").forEach(el => {
+        if (el.id !== 'logJenis' && el.id !== 'logLokasi') el.value = "";
+    });
+    
+    document.getElementById("orgPreview").innerHTML = "";
+    document.getElementById("logTableBody").innerHTML = "";
+
+    const inputs = ["mpHadir","mpBelum","pCuti","pSakit","pIjin","oCuti","oSakit","oIjin"];
+    for (const id of inputs) {
+        const val = await idbKeyval.get(getKey(id));
+        if (val) document.getElementById(id).value = val;
+    }
+
+    // Load foto struktur organisasi
+    await loadPhoto("inputOrg", "orgPreview");
+
+    let totalMachines = 0;
+    (factoryConfig[factory] || []).forEach(g => totalMachines += g.machines.length);
+
+    for(let i=1; i<=totalMachines; i++){
+        const st = await idbKeyval.get(getKey(`status-${i}`));
+        if(st){
+            document.getElementById(`status-${i}`).value = st;
+            document.getElementById("machine-"+i).className = "box machine-box status-"+st+"-second";
+        }
+        
+        // Load foto rectangle
+        await loadPhoto(`fileRectangle-${i}`, `rectangle-${i}`);
+        
+        // Load foto lingkaran
+        for(let j=1; j<=3; j++){
+            const circleId = `circlePreview-${i}-${j}`;
+            const circleEl = document.getElementById(circleId);
+            if(circleEl) {
+                await loadPhoto(circleId, circleId);
+            }
+        }
+    }
+
+    const logs = await idbKeyval.get(getKey("logData")); 
+    if(logs) logs.forEach((log, index) => renderLogRow(log, index));
+    
+    buatDiagram();
+    updateReportSummary();
+}
+
+function renderLogRow(log, index) {
+    const tbody = document.getElementById("logTableBody");
+    const row = tbody.insertRow();
+    row.innerHTML = `
+        <td>${log.tanggal}</td>
+        <td>${log.jenis}</td>
+        <td>${log.lokasi || "-"}</td>
+        <td>${log.deskripsi}</td>
+        <td>${log.cause}</td>
+        <td>${log.counter}</td>
+        <td>
+            ${log.pic}
+            <button class="delete-log-btn" onclick="deleteLog(${index})" title="Hapus log">×</button>
+        </td>`;
+}
+
+async function tambahLog(){
+    const data = {
+        tanggal: document.getElementById("tanggalHari").value,
+        jenis: document.getElementById("logJenis").value,
+        lokasi: document.getElementById("logLokasi").value, 
+        deskripsi: document.getElementById("logDeskripsi").value,
+        cause: document.getElementById("logCause").value,
+        counter: document.getElementById("logCounter").value,
+        pic: document.getElementById("logPIC").value
+    };
+    
+    if(!data.jenis || !data.deskripsi) {
+        alert("Harap isi Jenis Problem dan Deskripsi!");
+        return;
+    }
+    
+    const key = getKey("logData");
+    let list = await idbKeyval.get(key) || [];
+    list.push(data);
+    await idbKeyval.set(key, list);
+    renderLogRow(data, list.length - 1);
+    
+    document.getElementById("logJenis").value = "";
+    document.getElementById("logLokasi").value = "";
+    document.getElementById("logDeskripsi").value = "";
+    document.getElementById("logCause").value = "";
+    document.getElementById("logCounter").value = "";
+    document.getElementById("logPIC").value = "";
+    
+    updateReportSummary();
+}
+
+async function deleteLog(index) {
+    if (!confirm("Apakah Anda yakin ingin menghapus log ini?")) {
+        return;
+    }
+    
+    const key = getKey("logData");
+    let list = await idbKeyval.get(key) || [];
+    
+    if (index >= 0 && index < list.length) {
+        list.splice(index, 1);
+        await idbKeyval.set(key, list);
+        
+        const tbody = document.getElementById("logTableBody");
+        tbody.innerHTML = "";
+        list.forEach((log, idx) => renderLogRow(log, idx));
+        
+        console.log(`🗑️ Log dengan index ${index} telah dihapus`);
+    }
+    
+    updateReportSummary();
+}
+
+// ==================== CHART FUNCTION ====================
+Chart.register(ChartDataLabels);
+let chart;
+
+function buatDiagram(){
+    const data=[
+        +document.getElementById("mpHadir").value||0, 
+        +document.getElementById("mpBelum").value||0, 
+        +document.getElementById("pCuti").value||0, 
+        +document.getElementById("pSakit").value||0,  
+        +document.getElementById("pIjin").value||0, 
+        +document.getElementById("oCuti").value||0,   
+        +document.getElementById("oSakit").value||0, 
+        +document.getElementById("oIjin").value||0    
+    ];
+    
+    const total=data.reduce((a,b)=>a+b,0);
+    if(total===0) {
+        document.getElementById("centerValue").innerText = "0 / 0";
+        document.getElementById("rasioText").style.width = "0%";
+        document.getElementById("rasioText").innerText = "Absensi: 0%";
+        if(chart) chart.destroy();
+        return;
+    }
+    
+    const persen=((data[0]/total)*100).toFixed(1);
+    document.getElementById("centerValue").innerText = data[0] + " / " + total;
+    document.getElementById("rasioText").style.width = persen + "%";
+    document.getElementById("rasioText").innerText = "Absensi: " + persen + "%";
+    
+    if(chart) chart.destroy();
+    
+    chart = new Chart(document.getElementById("myChart"), {
+        type: "doughnut",
+        data: {
+            datasets: [{
+                data: data,
+                backgroundColor: [
+                    "#729E3F", "#e74c3c", "#1F3C88", "#5dade2", 
+                    "#FF8F1F", "#ff69b4", "#8e44ad", "#f1c40f"
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            cutout: "75%",
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                datalabels: { display: false }
+            }
+        }
+    });
+}
+
+// ==================== AUTO SCROLL FUNCTION ====================
+window.addEventListener("load", function() {
+    const scrollContainer = document.getElementById("globalScroll");
+    if (!scrollContainer) return;
+
+    let direction = "down";
+    let autoScroll = true;
+    let lastUserScroll = Date.now();
+    let scrollPosition = scrollContainer.scrollTop;
+    const maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight;
+
+    scrollContainer.addEventListener("wheel", (e) => {
+        autoScroll = false;
+        lastUserScroll = Date.now();
+    }, { passive: true });
+
+    scrollContainer.addEventListener("touchstart", () => {
+        autoScroll = false;
+        lastUserScroll = Date.now();
+    }, { passive: true });
+
+    scrollContainer.addEventListener("scroll", () => {
+        if (autoScroll) {
+            scrollPosition = scrollContainer.scrollTop;
+        } else {
+            lastUserScroll = Date.now();
+        }
+    });
+
+    function loopScroll() {
+        const now = Date.now();
+
+        if (!autoScroll && now - lastUserScroll > 2000) {
+            autoScroll = true;
+            scrollPosition = scrollContainer.scrollTop;
+        }
+
+        if (autoScroll) {
+            if (direction === "down") {
+                if (scrollPosition < maxScroll) {
+                    scrollPosition += 0.2;
+                    scrollContainer.scrollTop = scrollPosition;
+                } else {
+                    direction = "up";
+                    setTimeout(() => { }, 2000);
+                }
+            } else {
+                if (scrollPosition > 0) {
+                    scrollPosition -= 0.2;
+                    scrollContainer.scrollTop = scrollPosition;
+                } else {
+                    direction = "down";
+                    setTimeout(() => { }, 2000);
+                }
+            }
+        }
+
+        requestAnimationFrame(loopScroll);
+    }
+
+    loopScroll();
+});
+
+// ==================== INISIALISASI ====================
+window.addEventListener('DOMContentLoaded', function() {
+    // Set tanggal hari ini
+    const today = new Date();
+    const todayString = today.toISOString().split("T")[0];
+    document.getElementById("tanggalHari").value = todayString;
+    
+    // Initialize real-time clock
+    updateRealTimeClock();
+    setInterval(updateRealTimeClock, 1000);
+    
+    // Start shift timer
+    startShiftTimer();
+    
+    // Set factory logo
+    setFactoryLogo("Factory 2");
+    
+    // Load initial data
+    loadAllData();
+});
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('reportModal');
+    if (event.target == modal) {
+        closeModal();
+    }
+}
+</script>
+
+</body>
+</html>
