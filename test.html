@@ -2092,11 +2092,11 @@ async function uploadPhotoWithOptions(inputElement, targetElementId) {
         if (choice) {
             // Simpan hanya untuk tanggal ini
             await savePhoto(inputElement.id, photoData, false);
-            alert(`✅ Foto disimpan hanya untuk tanggal ${currentDate}`);
+            alert(` Foto disimpan hanya untuk tanggal ${currentDate}`);
         } else {
             // Simpan untuk semua tanggal (global)
             await savePhoto(inputElement.id, photoData, true);
-            alert('✅ Foto disimpan untuk SEMUA tanggal');
+            alert(' Foto disimpan untuk SEMUA tanggal');
         }
         
         // Reset input file
@@ -2108,7 +2108,7 @@ async function uploadPhotoWithOptions(inputElement, targetElementId) {
 
 // ==================== FUNGSI NAMA DARI FOTO ====================
 function assignNamesToCircles() {
-    console.log('🔄 Assigning names to circles for Shift', currentShift);
+    console.log(' Assigning names to circles for Shift', currentShift);
     
     const factorySelect = document.getElementById('factorySelect');
     const factoryId = factorySelect.value;
@@ -2116,7 +2116,7 @@ function assignNamesToCircles() {
     const shiftKey = currentShift === 'A' ? 'shift_a' : 'shift_b';
     const shiftData = memberData[factoryId]?.[shiftKey] || [];
     
-    console.log(`📊 Factory: ${factoryId}, Shift: ${currentShift}, Available names: ${shiftData.length}`);
+    console.log(`Factory: ${factoryId}, Shift: ${currentShift}, Available names: ${shiftData.length}`);
     
     let nameIndex = 0;
     const allCircles = document.querySelectorAll('.circle:not(.circle-name)');
@@ -2154,7 +2154,7 @@ function assignNamesToCircles() {
         }
     });
     
-    console.log(`✅ Total circles assigned: ${nameIndex} of ${allCircles.length}`);
+    console.log(` Total circles assigned: ${nameIndex} of ${allCircles.length}`);
 }
 
 function uploadPhotoToCircle(circle, currentName = '') {
@@ -2681,4 +2681,5 @@ window.onclick = function(event) {
 </script>
 
 </body>
+
 </html>
